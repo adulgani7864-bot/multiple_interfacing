@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Result - YOWOv3</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  </head>
+  <body>
+    <div class="container" style="padding:40px 20px">
+      <h2>Processed Result</h2>
+      <p>Original: <a href="{{ url_for('uploaded_file', filename=orig) }}">{{ orig }}</a></p>
+      <div style="max-width:900px;margin-top:12px">
+        {% set ext = filename.split('.')[-1].lower() if filename else '' %}
+        {% if ext in ['mp4', 'mov', 'avi', 'webm'] %}
+          <video controls style="width:100%;border-radius:8px;background:#000;" preload="metadata">
+            <source src="{{ url_for('uploaded_file', filename=filename) }}" type="video/{{ 'mp4' if ext=='mp4' else ext }}">
+            Your browser does not support the video tag. <a href="{{ url_for('uploaded_file', filename=filename) }}">Download</a>
+          </video>
+        {% else %}
+          <img src="{{ url_for('uploaded_file', filename=filename) }}" style="width:100%;border-radius:8px;">
+        {% endif %}
+      </div>
+      <p style="margin-top:12px">
+        <a href="{{ url_for('index') }}">Back to home</a>
+        {% if ext in ['mp4', 'mov', 'avi', 'webm'] %}
+          &nbsp;·&nbsp; <a href="{{ url_for('uploaded_file', filename=filename) }}" download>Download processed video</a>
+        {% endif %}
+      </p>
+    </div>
+  </body>
+</html>

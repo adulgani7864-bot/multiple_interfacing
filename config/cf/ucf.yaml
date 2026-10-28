@@ -1,0 +1,140 @@
+BACKBONE2D:
+  YOLOv8:
+    PRETRAIN:
+      l: weights/backbone2D/YOLOv8/v8_l.pth
+      m: weights/backbone2D/YOLOv8/v8_m.pth
+      n: weights/v8_n.pth
+      s: weights/backbone2D/YOLOv8/v8_s.pth
+      x: weights/backbone2D/YOLOv8/v8_x.pth
+    ver: n
+BACKBONE3D:
+  I3D:
+    PRETRAIN:
+      default: weights/backbone3D/rgb_imagenet.pth
+  MOBILENET:
+    PRETRAIN:
+      width_mult_0.5x: weights/backbone3D/mobilenet/kinetics_mobilenet_0.5x_RGB_16_best.pth
+      width_mult_1.0x: weights/backbone3D/mobilenet/kinetics_mobilenet_1.0x_RGB_16_best.pth
+      width_mult_1.5x: weights/backbone3D/mobilenet/kinetics_mobilenet_1.5x_RGB_16_best.pth
+      width_mult_2.0x: weights/backbone3D/mobilenet/kinetics_mobilenet_2.0x_RGB_16_best.pth
+    width_mult: 2.0
+  MOBILENETv2:
+    PRETRAIN:
+      width_mult_0.2x: weights/backbone3D/mobilenetv2/kinetics_mobilenetv2_0.2x_RGB_16_best.pth
+      width_mult_0.45x: weights/backbone3D/mobilenetv2/kinetics_mobilenetv2_0.45x_RGB_16_best.pth
+      width_mult_0.7x: weights/backbone3D/mobilenetv2/kinetics_mobilenetv2_0.7x_RGB_16_best.pth
+      width_mult_1.0x: weights/backbone3D/mobilenetv2/kinetics_mobilenetv2_1.0x_RGB_16_best.pth
+    width_mult: 1.0
+  RESNET:
+    PRETRAIN:
+      ver_101: weights/backbone3D/resnet/kinetics_resnet_101_RGB_16_best.pth
+      ver_18: weights/backbone3D/resnet/kinetics_resnet_18_RGB_16_best.pth
+      ver_50: weights/backbone3D/resnet/kinetics_resnet_50_RGB_16_best.pth
+    ver: 101
+  RESNEXT:
+    PRETRAIN:
+      ver_101: weights/backbone3D/resnext/resnext-101-kinetics.pth
+    ver: 101
+  SHUFFLENET:
+    PRETRAIN:
+      width_mult_0.5x: weights/backbone3D/shufflenet/kinetics_shufflenet_0.5x_G3_RGB_16_best.pth
+      width_mult_1.0x: weights/backbone3D/shufflenet/kinetics_shufflenet_1.0x_G3_RGB_16_best.pth
+      width_mult_1.5x: weights/backbone3D/shufflenet/kinetics_shufflenet_1.5x_G3_RGB_16_best.pth
+      width_mult_2.0x: weights/backbone3D/shufflenet/kinetics_shufflenet_2.0x_G3_RGB_16_best.pth
+    width_mult: 2.0
+  SHUFFLENETv2:
+    PRETRAIN:
+      width_mult_0.25x: weights/backbone3D/shufflenetv2/kinetics_shufflenetv2_0.25x_RGB_16_best.pth
+      width_mult_1.0x: weights/backbone3D/shufflenetv2/kinetics_shufflenetv2_1.0x_RGB_16_best.pth
+      width_mult_1.5x: weights/backbone3D/shufflenetv2/kinetics_shufflenetv2_1.5x_RGB_16_best.pth
+      width_mult_2.0x: weights/backbone3D/shufflenetv2/kinetics_shufflenetv2_2.0x_RGB_16_best.pth
+    width_mult: 2.0
+LOSS:
+  NORMAL:
+    dynamic_k: true
+    dynamic_top_k: 10
+    radius: 2.5
+    scale_box_loss: 5.0
+    scale_cls_loss: 1.0
+    scale_dfl_loss: 1.0
+    top_k: 10
+  SIMOTA:
+    dynamic_k: false
+    dynamic_top_k: 40
+    gamma: 0.5
+    mode: balance
+    radius: 2.5
+    scale_box_loss: 7.5
+    scale_cls_loss: 0.5
+    scale_dfl_loss: 1.5
+    soft_label: true
+    top_k: 10
+  TAL:
+    alpha: 0.5
+    beta: 6.0
+    radius: 2.5
+    scale_box_loss: 7.5
+    scale_cls_loss: 0.5
+    scale_dfl_loss: 1.5
+    soft_label: false
+    top_k: 10
+acc_grad: 16
+active_checker: true
+adjustlr_schedule:
+- 1
+- 2
+- 3
+- 4
+- 5
+backbone2D: yolov8
+backbone3D: i3d
+batch_size: 8
+clip_length: 16
+config_path: config/cf/ucf.yaml
+data_root: ucf24
+dataset: ucf
+fusion_module: Simple
+idx2name:
+  0: Baseketball
+  1: BaseketballDunk
+  2: Biking
+  3: CliffDiving
+  4: CricketBowling
+  5: Diving
+  6: Fencing
+  7: FloorGymnastics
+  8: GolfSwing
+  9: HorseRiding
+  10: IceDancing
+  11: LongJump
+  12: PoleVault
+  13: RopeClimbing
+  14: SalsaSpin
+  15: SkateBoarding
+  16: Skiing
+  17: Skijet
+  18: Soccer Juggling
+  19: Surfing
+  20: TennisSwing
+  21: TrampolineJumping
+  22: VolleyballSpiking
+  23: WalkingWithDog
+img_size: 224
+interchannels:
+- 256
+- 256
+- 256
+loss: tal
+lr: 0.0001
+lr_decay: 0.5
+max_epoch: 7
+max_step_warmup: 500
+mode: decoupled
+num_classes: 24
+num_workers: 6
+pretrain_path: null
+root_path: ucf24
+sampling_rate: 1
+save_folder: weights/fig1/ucf/Simple
+split_path: file_list_BasketballDunk.txt
+weight_decay: 0.0005

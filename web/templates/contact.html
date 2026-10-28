@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Contact YOWO for product demos, sales inquiries, and security consultations." />
+  <title>Contact YOWO | Request a Demo</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="site-header">
+      <a class="brand" href="{{ url_for('index') }}" aria-label="YOWO home">
+        <span class="brand-mark" aria-hidden="true">✓</span>
+        <span>Y<span class="accent">OWO</span></span>
+      </a>
+      <nav class="nav" aria-label="Main navigation">
+        <a href="{{ url_for('index') }}#platform">Platform</a>
+        <a href="{{ url_for('index') }}#how-it-works">How it works</a>
+        <a href="{{ url_for('index') }}#security">Security</a>
+      </nav>
+      <a class="button button-outline button-small" href="{{ url_for('contact') }}">Request demo</a>
+    </header>
+
+    <main class="contact-page">
+      <section class="contact-hero">
+        <p class="eyebrow"><span class="status-dot"></span>Contact us</p>
+        <h1>Request a private demo.</h1>
+        <p>Tell us about your security environment and we’ll show you how YOWO can detect suspicious actions and theft in real time using the cameras you already have.</p>
+      </section>
+
+      <section class="contact-shell" aria-label="Contact information and request form">
+        <aside class="contact-info">
+          <h2>Why teams choose YOWO</h2>
+          <p>Built for businesses that need rapid alerts, accurate behavior recognition, and easy deployment across existing camera setups.</p>
+          <ul>
+            <li>Real-time suspicious activity detection</li>
+            <li>Zero-new-camera requirement</li>
+            <li>Fast deployment for retail, logistics, and facilities</li>
+          </ul>
+        </aside>
+
+        <div class="contact-form-card">
+          <h2>Send us a message</h2>
+          <form method="post" action="{{ url_for('contact') }}">
+            <div class="form-grid">
+              <div class="field">
+                <label for="name">Full name</label>
+                <input id="name" name="name" type="text" placeholder="Your name" required />
+              </div>
+
+              <div class="field">
+                <label for="email">Email</label>
+                <input id="email" name="email" type="email" placeholder="you@company.com" required />
+              </div>
+
+              <div class="field full">
+                <label for="company">Company</label>
+                <input id="company" name="company" type="text" placeholder="Company or organization" value="{{ company or '' }}" />
+              </div>
+
+              <div class="field full">
+                <label for="message">Project details</label>
+                <textarea id="message" name="message" placeholder="Tell us about your camera setup, use case, and timeline..." required></textarea>
+              </div>
+            </div>
+
+            <button class="button button-primary contact-submit" type="submit">Send request</button>
+
+            {% with messages = get_flashed_messages() %}
+              {% if messages %}
+                <div class="form-status">
+                  {% for message in messages %}
+                    <p>{{ message }}</p>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            {% endwith %}
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-column footer-branding">
+        <div class="brand footer-brand" aria-label="YOWO home">
+          <span class="brand-mark" aria-hidden="true">✓</span>
+          <span>Y<span class="accent">OWO</span></span>
+        </div>
+        <p class="footer-intro">Vision-based detection for suspicious activity, theft prevention, and real-time security monitoring.</p>
+      </div>
+
+      <div class="footer-column footer-contributors">
+        <h3>Project Contributors</h3>
+        <ul>
+          <li><a href="#">Abdul Sami</a></li>
+          <li><a href="#">Abeerah</a></li>
+          <li><a href="#">Sehar</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-column footer-copy">
+        <h3>Copyright</h3>
+        <p>© 2026 YOWOv3</p>
+        <p>Multiple Streaming Interfacing</p>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>

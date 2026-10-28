@@ -1,0 +1,621 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="YOWO detects suspicious actions and theft in real time using your existing cameras." />
+  <title>YOWO — See the moment before it becomes a loss</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+</head>
+<body>
+  <div class="page-shell">
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="YOWO home">
+        <span class="brand-mark" aria-hidden="true">✓</span>
+        <span>Y<span class="accent">OWO</span></span>
+      </a>
+      <nav class="nav" aria-label="Main navigation">
+        <a href="#platform">Platform</a>
+        <a href="#how-it-works">How it works</a>
+        <a href="#security">Security</a>
+      </nav>
+      <a class="button button-outline button-small" href="{{ url_for('contact') }}">Request demo</a>
+    </header>
+
+    <main>
+      <section class="hero" id="top">
+        <div class="hero-copy">
+          <p class="eyebrow"><span class="status-dot"></span>Real-time vision intelligence</p>
+          <h1>See the moment<br /><span class="accent">before it becomes</span><br />a loss.</h1>
+          <p class="hero-description">YOWO turns your existing cameras into an intelligent security layer—detecting suspicious actions, theft, and threats in real time.</p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#demo">See YOWO in action <span aria-hidden="true">→</span></a>
+            <a class="button button-outline" href="#platform">Explore the platform</a>
+          </div>
+          <div class="proof-points"><span>✓ No new cameras</span><span>✓ Privacy-first AI</span><span>✓ 24/7 coverage</span></div>
+        </div>
+
+        <div class="dashboard-wrap" aria-label="Live theft detection dashboard preview">
+          <div class="dashboard-glow"></div>
+          <div class="dashboard">
+            <div class="dashboard-bar"><span><i class="live-dot"></i> LIVE FEED / CAM 04</span><code>14:32:08 UTC</code></div>
+            <div class="camera-feed">
+              <div class="tracking-box"><strong>UNUSUAL ACTION · 94%</strong><span>TRACKING: SUBJECT_002</span></div>
+              <span class="object-tag">OBJECT: PRODUCT</span>
+              <span class="alert-tag"><i class="live-dot"></i> Alert: concealment detected</span>
+            </div>
+            <div class="dashboard-stats">
+              <div><small>Threat level</small><strong class="danger">High</strong></div>
+              <div><small>Response time</small><strong>0.8 <em>sec</em></strong></div>
+              <div><small>Cameras active</small><strong>24 <em>/ 24</em></strong></div>
+            </div>
+          </div>
+          <div class="incident-card"><small>Incidents prevented this month</small><strong>1,284 <span>+18.6%</span></strong></div>
+        </div>
+      </section>
+
+      <!-- New carousels: Recent uploads, Video previews, Image examples -->
+      {% if carousel_recent %}
+      <section class="detection-gallery" id="recent-uploads" aria-labelledby="recent-title">
+        <div class="gallery-heading">
+          <div>
+            <p class="eyebrow"><span class="status-dot"></span>Recent</p>
+            <h2 id="recent-title">Recent uploads</h2>
+          </div>
+        </div>
+        <div class="gallery-viewport">
+          <div class="gallery-track">
+            {%- for item in carousel_recent %}
+            <article class="detection-card">
+              <div class="detection-image" style="background:#000; display:flex; align-items:center; justify-content:center;">
+                {% if item.is_video %}
+                  <video muted autoplay loop playsinline preload="metadata" style="width:100%;height:100%;object-fit:cover;">
+                    <source src="{{ item.url }}">
+                  </video>
+                {% else %}
+                  <div class="detection-image" style="background-image:url('{{ item.url }}');"></div>
+                {% endif %}
+              </div>
+              <div class="detection-card-copy"><span>Recent</span><h3>{{ 'Video_%s_result' % loop.index if item.is_video else 'Uploaded image' }}</h3><p>Tap to open the processed result.</p></div>
+            </article>
+            {%- endfor %}
+          </div>
+        </div>
+      </section>
+      {% endif %}
+
+      {% if carousel_images %}
+      <section class="detection-gallery" id="image-examples" aria-labelledby="images-title">
+        <div class="gallery-heading">
+          <div>
+            <p class="eyebrow"><span class="status-dot"></span>Examples</p>
+            <h2 id="images-title">Uploaded images</h2>
+          </div>
+        </div>
+        <div class="gallery-viewport">
+          <div class="gallery-track">
+            {%- for item in carousel_images %}
+            <article class="detection-card">
+              <div class="detection-image" style="background-image:url('{{ item.url }}');"></div>
+              <div class="detection-card-copy"><span>Image</span><h3>Preview</h3><p>Uploaded image example.</p></div>
+            </article>
+            {%- endfor %}
+          </div>
+        </div>
+      </section>
+      {% endif %}
+
+      <!-- Category carousels -->
+      {% if category_carousels %}
+      {% for cat, items in category_carousels.items() %}
+      <section class="detection-gallery category-carousel" id="cat-{{ loop.index }}" aria-labelledby="cat-title-{{ loop.index }}">
+        <div class="gallery-heading">
+          <div>
+            <p class="eyebrow"><span class="status-dot"></span>{{ cat }}</p>
+            <h2 id="cat-title-{{ loop.index }}">{{ cat }}</h2>
+          </div>
+        </div>
+        <div class="gallery-viewport auto-scroll">
+          <div class="gallery-track">
+            <div class="scroll-inner">
+              {%- for item in items %}
+              <article class="detection-card">
+                <div class="detection-image" style="background-image:url('{{ item.url }}');"></div>
+                <div class="detection-card-copy"><span>{{ item.title if item.title else cat }}</span><h3>{{ item.title if item.title else (cat + ' example') }}</h3><p>{{ item.caption if item.caption else '' }}</p></div>
+              </article>
+              {%- endfor %}
+              {# duplicate items to create seamless loop #}
+              {%- for item in items %}
+              <article class="detection-card">
+                <div class="detection-image" style="background-image:url('{{ item.url }}');"></div>
+                <div class="detection-card-copy"><span>{{ item.title if item.title else cat }}</span><h3>{{ item.title if item.title else (cat + ' example') }}</h3><p>{{ item.caption if item.caption else '' }}</p></div>
+              </article>
+              {%- endfor %}
+            </div>
+          </div>
+        </div>
+      </section>
+      {% endfor %}
+      {% endif %}
+
+      <section class="category-showcase" id="detection-categories" aria-labelledby="category-title">
+        <div class="category-showcase-heading">
+          <p class="eyebrow"><span class="status-dot"></span>Detection categories</p>
+          <h2 id="category-title">One camera. Every signal.</h2>
+          <p>Browse the behaviors YOWO can identify across your camera network.</p>
+        </div>
+
+        <div class="category-carousel-row">
+          <div class="category-row-heading"><span class="category-index">01</span><h3>Car detection</h3><span>Vehicles, plates, and unusual parking</span></div>
+          <div class="category-carousel-viewport">
+            <div class="category-carousel-track category-track-right">
+              <article class="category-card category-car-1"><div class="category-card-overlay"><span>Vehicle tracking</span><strong>License plate detected</strong></div></article>
+              <article class="category-card category-car-2"><div class="category-card-overlay"><span>Parking analytics</span><strong>Vehicle entered zone</strong></div></article>
+              <article class="category-card category-car-3"><div class="category-card-overlay"><span>Perimeter watch</span><strong>After-hours arrival</strong></div></article>
+              <article class="category-card category-car-1"><div class="category-card-overlay"><span>Vehicle tracking</span><strong>License plate detected</strong></div></article>
+            </div>
+          </div>
+        </div>
+
+        <div class="category-carousel-row">
+          <div class="category-row-heading"><span class="category-index">02</span><h3>Action detection</h3><span>Behavioral cues before incidents escalate</span></div>
+          <div class="category-carousel-viewport">
+            <div class="category-carousel-track category-track-left">
+              <article class="category-card category-action-1"><div class="category-card-overlay"><span>Behavior analysis</span><strong>Loitering pattern flagged</strong></div></article>
+              <article class="category-card category-action-2"><div class="category-card-overlay"><span>Gesture recognition</span><strong>Restricted action detected</strong></div></article>
+              <article class="category-card category-action-3"><div class="category-card-overlay"><span>Scene understanding</span><strong>Group formation detected</strong></div></article>
+              <article class="category-card category-action-1"><div class="category-card-overlay"><span>Behavior analysis</span><strong>Loitering pattern flagged</strong></div></article>
+            </div>
+          </div>
+        </div>
+
+        <div class="category-carousel-row">
+          <div class="category-row-heading"><span class="category-index">03</span><h3>Theft &amp; motion detection</h3><span>Concealment, movement, and access alerts</span></div>
+          <div class="category-carousel-viewport">
+            <div class="category-carousel-track category-track-right">
+              <article class="category-card category-theft-1"><div class="category-card-overlay"><span>Theft prevention</span><strong>Concealment detected</strong></div></article>
+              <article class="category-card category-theft-2"><div class="category-card-overlay"><span>Motion anomaly</span><strong>Movement in secure area</strong></div></article>
+              <article class="category-card category-theft-3"><div class="category-card-overlay"><span>Access monitoring</span><strong>Door opened after hours</strong></div></article>
+              <article class="category-card category-theft-1"><div class="category-card-overlay"><span>Theft prevention</span><strong>Concealment detected</strong></div></article>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="video-lab" id="demo" aria-labelledby="video-lab-title">
+        <div class="video-lab-heading">
+          <p class="eyebrow"><span class="status-dot"></span>Video intelligence lab</p>
+          <h2 id="video-lab-title">Upload footage. Let YOWO find the moment.</h2>
+          <p>Test action detection on a recorded clip, then review the processed result with every flagged event clearly marked.</p>
+        </div>
+        <div class="video-lab-grid">
+          <div class="upload-panel">
+            <div class="panel-label"><span>01</span>Upload source video</div>
+            <label class="upload-zone" for="video-upload" id="upload-zone">
+              <span class="upload-icon" aria-hidden="true">↑</span>
+              <strong>Drop video here</strong>
+              <span>or click to browse from your device</span>
+              <small>MP4, MOV, AVI · up to 2 GB</small>
+            </label>
+            <div class="source-preview-box" id="source-preview-box">
+              <video id="uploaded-video-preview" controls playsinline preload="metadata"></video>
+              <div class="simple-preview-status" id="source-preview-status"></div>
+            </div>
+            <input id="video-upload" type="file" accept="video/mp4,video/quicktime,video/x-msvideo" />
+            <div class="processing-options"><span><i class="checkmark">✓</i> Action detection</span><span><i class="checkmark">✓</i> Theft indicators</span></div>
+            <button class="button button-primary process-button" type="button">Process video <span aria-hidden="true">→</span></button>
+          </div>
+          <div class="processed-panel">
+            <div class="panel-label"><span>02</span>Processed preview <b><i class="live-dot"></i> Analysis ready</b></div>
+            <div class="processed-video" id="processed-video" role="img" aria-label="Processed video preview showing a detected event">
+              <div class="video-grid-lines"></div>
+              <div class="subject-silhouette"><span></span></div>
+              <div class="detection-box"><strong>CONCEALMENT · 94%</strong><span>SUBJECT_002 / 00:14:28</span></div>
+              <span class="video-timestamp">00:14 / 00:38</span>
+              <span class="video-alert"><i class="live-dot"></i> Flagged event</span>
+              <div class="video-controls"><span>▶</span><div><i></i></div><span>⛶</span></div>
+            </div>
+            <div class="analysis-summary"><span><small>Events found</small><strong>03</strong></span><span><small>Confidence</small><strong class="accent">94%</strong></span><span><small>Processing</small><strong>0.8s</strong></span></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="detection-gallery" id="gallery" aria-labelledby="gallery-title">
+        <div class="gallery-heading">
+          <div>
+            <p class="eyebrow"><span class="status-dot"></span>Detection library</p>
+            <h2 id="gallery-title">See what Yowo catches.</h2>
+          </div>
+          <div class="carousel-nav" aria-label="Detection image carousel navigation">
+            <a class="carousel-button" href="#detection-1" aria-label="Previous detection examples">←</a>
+            <a class="carousel-button" href="#detection-3" aria-label="Next detection examples">→</a>
+          </div>
+        </div>
+        <div class="gallery-viewport">
+          <div class="gallery-track">
+            {%- for item in carousel %}
+            <article class="detection-card">
+              {% if item.is_video %}
+                <div class="detection-image" style="background:#000; display:flex; align-items:center; justify-content:center;">
+                  <video muted preload="metadata" style="width:100%;height:100%;object-fit:cover;">
+                    <source src="{{ item.url }}" type="video/{{ 'mp4' if item.url.endswith('.mp4') else item.url.rsplit('.',1)[-1] }}">
+                  </video>
+                </div>
+                <div class="detection-card-copy"><span>Uploaded Video</span><h3>Processed clip</h3><p>Preview of recent uploaded video.</p></div>
+              {% else %}
+                <div class="detection-image" style="background-image:url('{{ item.url }}');"><span class="image-chip">Image</span></div>
+                <div class="detection-card-copy"><span>Example</span><h3>Detection example</h3><p>Sample image or uploaded photo.</p></div>
+              {% endif %}
+            </article>
+            {%- endfor %}
+          </div>
+        </div>
+      </section>
+
+      <section class="platform section-band" id="platform">
+        <div class="section-heading"><p class="eyebrow">One layer. Every angle.</p><h2>Security that understands behavior, not just motion.</h2></div>
+        <div class="feature-grid">
+          <article class="feature-card"><span class="number">01</span><h3>Action detection</h3><p>Recognize concealment, loitering, tampering, and other high-risk actions—not just movement.</p></article>
+          <article class="feature-card"><span class="number">02</span><h3>Instant alerts</h3><p>Route high-confidence incidents to your team with the context needed to act quickly.</p></article>
+          <article class="feature-card" id="security"><span class="number">03</span><h3>Built for privacy</h3><p>Keep control of your footage with on-device processing options and configurable retention.</p></article>
+        </div>
+      </section>
+
+      <section class="how-it-works" id="how-it-works">
+        <div><p class="eyebrow">From camera to clarity</p><h2>Your cameras already see it. Now your team can, too.</h2></div>
+        <div class="steps"><div><span>01</span><p>Connect your existing camera feeds.</p></div><div><span>02</span><p>Train on what matters to your space.</p></div><div><span>03</span><p>Act on alerts with confidence.</p></div></div>
+      </section>
+
+      <section class="cta" id="contact"><p class="eyebrow">Ready when you are</p><h2>Stop reviewing footage. Start preventing incidents.</h2><a class="button button-primary" href="mailto:hello@yowo.example">Request a private demo <span aria-hidden="true">→</span></a></section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="footer-column footer-branding">
+        <div class="brand footer-brand" href="#top" aria-label="YOWO home">
+          <span class="brand-mark" aria-hidden="true">✓</span>
+          <span>Y<span class="accent">OWO</span></span>
+        </div>
+        <p class="footer-intro">Vision-based detection for suspicious activity, theft prevention, and real-time security monitoring.</p>
+      </div>
+
+      <div class="footer-column footer-contributors">
+        <h3>Project Contributors</h3>
+        <ul>
+          <li><a href="#">Abdul Sami</a></li>
+          <li><a href="https://www.linkedin.com/in/abeerah-fatima-b9aa1b417?utm_source=share_via&utm_content=profile&utm_medium=member_android">Abeerah</a></li>
+          <li><a href="https://www.linkedin.com/in/sehar-akram-7bb43640b?utm_source=share_via&utm_content=profile&utm_medium=member_android">Sehar</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-column footer-copy">
+        <h3>Copyright</h3>
+        <p>© 2026 YOWOv3</p>
+        <p>Multiple Streaming Interfacing</p>
+      </div>
+    </footer>
+  </div>
+  <script>
+    (function(){
+      const uploadInput = document.getElementById('video-upload');
+      const uploadZone = document.getElementById('upload-zone');
+      const sourcePreviewBox = document.getElementById('source-preview-box');
+      const uploadedVideoPreview = document.getElementById('uploaded-video-preview');
+      const processButton = document.querySelector('.process-button');
+      const processedVideoContainer = document.getElementById('processed-video');
+      const sourcePreviewStatus = document.getElementById('source-preview-status');
+      const selectedVideoState = { file: null, previewRequest: 0 };
+
+      function isVideoFilename(name) {
+        return /\.(mp4|mov|avi|mkv|webm)$/i.test(name || '');
+      }
+
+      function absoluteUrl(path) {
+        if (!path) return '';
+        return path.startsWith('http') ? path : `${window.location.origin}${path}`;
+      }
+
+      function setSourceStatus(message) {
+        if (!sourcePreviewStatus) return;
+        sourcePreviewStatus.textContent = message || '';
+        sourcePreviewStatus.style.display = message ? 'block' : 'none';
+      }
+
+      function revealSourcePreview() {
+        if (sourcePreviewBox) {
+          sourcePreviewBox.classList.add('is-visible');
+          sourcePreviewBox.style.display = 'block';
+        }
+        if (uploadZone) uploadZone.style.display = 'none';
+      }
+
+      function setProcessButtonState(enabled, label) {
+        if (!processButton) return;
+        processButton.disabled = !enabled;
+        processButton.classList.toggle('is-processing', !enabled);
+        if (enabled) {
+          processButton.innerHTML = 'Process video <span aria-hidden="true">→</span>';
+        } else {
+          processButton.innerHTML = label || 'Processing video...';
+        }
+      }
+
+      function attachVideoSource(videoEl, url, posterUrl) {
+        if (!videoEl || !url) return;
+        if (videoEl.dataset.objectUrl) {
+          URL.revokeObjectURL(videoEl.dataset.objectUrl);
+          delete videoEl.dataset.objectUrl;
+        }
+        if (posterUrl) videoEl.setAttribute('poster', posterUrl);
+        videoEl.controls = true;
+        videoEl.muted = false;
+        videoEl.playsInline = true;
+        videoEl.preload = 'metadata';
+        videoEl.src = url;
+        videoEl.load();
+      }
+
+      async function transcodeSourcePreview(file, requestId) {
+        const formData = new FormData();
+        formData.append('file', file);
+        const response = await fetch('/preview_source', { method: 'POST', body: formData });
+        const rawText = await response.text();
+        let data = {};
+        try {
+          data = rawText ? JSON.parse(rawText) : {};
+        } catch (error) {
+          throw new Error('The server returned an invalid preview response.');
+        }
+        if (!response.ok) {
+          throw new Error(data.error || 'Could not prepare a source preview.');
+        }
+        if (requestId !== selectedVideoState.previewRequest) return;
+        const videoUrl = absoluteUrl(data.video_url || '');
+        const posterUrl = absoluteUrl(data.poster_url || '');
+        if (!videoUrl) throw new Error('No source preview was returned.');
+        attachVideoSource(uploadedVideoPreview, videoUrl, posterUrl);
+        setSourceStatus('');
+      }
+
+      function showUploadedPreview(file) {
+        if (!file) return;
+
+        const isVideo = (file.type && file.type.startsWith('video/')) || isVideoFilename(file.name);
+        if (!isVideo) {
+          alert('Please select a valid video file.');
+          return;
+        }
+
+        selectedVideoState.file = file;
+        selectedVideoState.previewRequest += 1;
+        const requestId = selectedVideoState.previewRequest;
+        const blobUrl = URL.createObjectURL(file);
+        let usedServerPreview = false;
+
+        revealSourcePreview();
+        setSourceStatus('Loading source preview…');
+        setProcessButtonState(true);
+
+        if (uploadedVideoPreview) {
+          if (uploadedVideoPreview.dataset.objectUrl) {
+            URL.revokeObjectURL(uploadedVideoPreview.dataset.objectUrl);
+          }
+          uploadedVideoPreview.dataset.objectUrl = blobUrl;
+          uploadedVideoPreview.removeAttribute('poster');
+          uploadedVideoPreview.controls = true;
+          uploadedVideoPreview.muted = false;
+          uploadedVideoPreview.playsInline = true;
+          uploadedVideoPreview.preload = 'auto';
+          uploadedVideoPreview.src = blobUrl;
+          uploadedVideoPreview.load();
+
+          const markReady = () => {
+            if (usedServerPreview || requestId !== selectedVideoState.previewRequest) return;
+            setSourceStatus(file.name);
+          };
+
+          uploadedVideoPreview.addEventListener('loadeddata', markReady, { once: true });
+          uploadedVideoPreview.addEventListener('error', async () => {
+            if (usedServerPreview || requestId !== selectedVideoState.previewRequest) return;
+            usedServerPreview = true;
+            setSourceStatus('Preparing a browser-playable preview…');
+            try {
+              await transcodeSourcePreview(file, requestId);
+            } catch (error) {
+              setSourceStatus(error.message);
+            }
+          }, { once: true });
+
+          setTimeout(() => {
+            if (usedServerPreview || requestId !== selectedVideoState.previewRequest) return;
+            if (uploadedVideoPreview.readyState >= 1 && uploadedVideoPreview.videoWidth > 0) {
+              markReady();
+              return;
+            }
+            usedServerPreview = true;
+            setSourceStatus('Preparing a browser-playable preview…');
+            transcodeSourcePreview(file, requestId).catch((error) => setSourceStatus(error.message));
+          }, 1200);
+        }
+      }
+
+      function showProcessingProgress() {
+        if (!processedVideoContainer) return;
+        processedVideoContainer.classList.add('is-processing');
+        processedVideoContainer.innerHTML = `
+          <div class="processing-overlay">
+            <div class="processing-bar">
+              <span class="processing-fill"></span>
+            </div>
+            <div class="processing-text">Processing video...</div>
+          </div>
+        `;
+
+        const fill = processedVideoContainer.querySelector('.processing-fill');
+        if (!fill) return;
+
+        let progress = 0;
+        const step = () => {
+          progress = Math.min(progress + Math.random() * 18 + 14, 100);
+          fill.style.width = `${progress}%`;
+          if (progress < 100) {
+            setTimeout(step, 220);
+          }
+        };
+        setTimeout(step, 120);
+      }
+
+      function restorePlaceholderVideo(message) {
+        if (!processedVideoContainer) return;
+        processedVideoContainer.classList.remove('is-processing');
+        processedVideoContainer.innerHTML = `
+          <video id="processed-video-placeholder" controls preload="metadata" playsinline></video>
+          <div class="simple-preview-status">${message || 'Waiting for processed video'}</div>
+        `;
+      }
+
+      function renderProcessedVideo(videoUrl) {
+        if (!processedVideoContainer) return;
+
+        processedVideoContainer.classList.remove('is-processing');
+        processedVideoContainer.innerHTML = '';
+        const processedVideo = document.createElement('video');
+        processedVideo.controls = true;
+        processedVideo.autoplay = false;
+        processedVideo.muted = false;
+        processedVideo.playsInline = true;
+        processedVideo.preload = 'auto';
+        processedVideo.src = videoUrl;
+        processedVideo.style.width = '100%';
+        processedVideo.style.height = '100%';
+        processedVideo.style.objectFit = 'contain';
+        processedVideoContainer.appendChild(processedVideo);
+        processedVideoContainer.setAttribute('aria-label', 'Processed video preview from the uploaded file');
+        processedVideo.load();
+
+        processedVideo.addEventListener('error', () => {
+          restorePlaceholderVideo('Processed video was saved but could not be played in this browser.');
+        }, { once: true });
+      }
+
+      if (processButton) {
+        processButton.disabled = true;
+        processButton.innerHTML = 'Process video <span aria-hidden="true">→</span>';
+      }
+
+      if (uploadInput) {
+        uploadInput.addEventListener('change', function () {
+          const file = this.files && this.files[0];
+          if (!file) {
+            selectedVideoState.file = null;
+            setProcessButtonState(false);
+            return;
+          }
+          showUploadedPreview(file);
+        });
+      }
+
+      if (processButton) {
+        processButton.addEventListener('click', async function () {
+          const file = selectedVideoState.file || (uploadInput && uploadInput.files ? uploadInput.files[0] : null);
+          if (!file) {
+            alert('Please choose a video first.');
+            setProcessButtonState(false);
+            return;
+          }
+
+          const formData = new FormData();
+          formData.append('file', file);
+          showProcessingProgress();
+          setProcessButtonState(false);
+
+          try {
+            const response = await fetch('/process_video', {
+              method: 'POST',
+              body: formData
+            });
+
+            const rawText = await response.text();
+            let data = {};
+            try {
+              data = rawText ? JSON.parse(rawText) : {};
+            } catch (error) {
+              throw new Error('The server returned an invalid response.');
+            }
+
+            if (!response.ok) {
+              throw new Error(data.error || 'Processing failed.');
+            }
+
+            const videoUrl = absoluteUrl(data.video_url || '');
+            if (!videoUrl) {
+              throw new Error('No processed video was returned.');
+            }
+
+            const sourceUrl = absoluteUrl(data.source_url || '');
+            if (sourceUrl && uploadedVideoPreview && uploadedVideoPreview.readyState < 2) {
+              attachVideoSource(uploadedVideoPreview, sourceUrl);
+              setSourceStatus('');
+            }
+            renderProcessedVideo(videoUrl);
+            setProcessButtonState(true);
+          } catch (error) {
+            restorePlaceholderVideo();
+            alert(error.message);
+            setProcessButtonState(Boolean(selectedVideoState.file));
+          }
+        });
+      }
+
+      // Continuous scroll using requestAnimationFrame for reliable playback
+      const speed = 40; // pixels per second
+      const inners = document.querySelectorAll('.auto-scroll .scroll-inner');
+      const state = [];
+      inners.forEach((el, i) => {
+        state[i] = {el, x:0, widthHalf: el.scrollWidth / 2 };
+      });
+      // category carousel tracks (separate rows)
+      const catTracks = document.querySelectorAll('.category-carousel-track');
+      const catState = [];
+      catTracks.forEach((el,i)=>{
+        // ensure seamless loop: if not duplicated, duplicate children
+        if (el.children.length > 0 && el.children.length < 6) {
+          // duplicate nodes to extend track
+          const clone = el.innerHTML;
+          el.innerHTML += clone;
+        }
+        catState[i] = {el, x:0, widthHalf: el.scrollWidth / 2, dir: el.classList.contains('category-track-left') ? 'left' : 'right'};
+      });
+      let last = performance.now();
+      function step(now){
+        const dt = (now - last) / 1000; last = now;
+        state.forEach(s => {
+          if (!s.widthHalf || s.widthHalf === 0) s.widthHalf = s.el.scrollWidth / 2;
+          s.x += speed * dt;
+          if (s.x >= s.widthHalf) s.x -= s.widthHalf;
+          s.el.style.transform = `translateX(${-s.x}px)`;
+        });
+        // animate category tracks
+        catState.forEach(s=>{
+          if (!s.widthHalf || s.widthHalf === 0) s.widthHalf = s.el.scrollWidth / 2;
+          // slightly different speed for category rows
+          const catSpeed = 30;
+          s.x += catSpeed * dt;
+          if (s.x >= s.widthHalf) s.x -= s.widthHalf;
+          if (s.dir === 'left') {
+            s.el.style.transform = `translateX(${s.x}px)`;
+          } else {
+            s.el.style.transform = `translateX(${-s.x}px)`;
+          }
+        });
+        requestAnimationFrame(step);
+      }
+      requestAnimationFrame(step);
+      // recompute sizes on resize
+      window.addEventListener('resize', ()=>{
+        inners.forEach((el,i)=> state[i].widthHalf = el.scrollWidth / 2);
+        catTracks.forEach((el,i)=> catState[i].widthHalf = el.scrollWidth / 2);
+      });
+    })();
+  </script>
+</body>
+</html>
